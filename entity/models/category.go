@@ -2,13 +2,10 @@ package models
 
 import "time"
 
-type UserAddress struct {
+type Category struct {
 	ID        uint
-	AddressID uint
-	UserID    uint
+	Category  string
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt *time.Time
-	Address   *Address
-	User      *User
 }

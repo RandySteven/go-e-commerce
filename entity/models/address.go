@@ -16,6 +16,7 @@ type City struct {
 type PostalCode struct {
 	ID         uint
 	PostalCode string
+	CityID     uint
 }
 
 type Address struct {

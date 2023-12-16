@@ -9,4 +9,6 @@ type ShopAddress struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletdAt  *time.Time
+	Address   Address
+	Shop      Shop
 }

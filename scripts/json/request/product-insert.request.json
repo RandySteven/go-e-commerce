@@ -1,0 +1,7 @@
+{
+    "name": "Product A",
+    "price": "10.000",
+    "stock": 100,
+    "description": "Lorem ipsum",
+    "category_id": 1
+}

@@ -1,0 +1,8 @@
+{
+    "first_name": "John",
+    "last_name": "doe",
+    "email": "john.doe@gmail.com",
+    "password": "test_1234",
+    "phone_number": "+6281234567890",
+    "birthdate": "YYYY-MM-DD"
+}

@@ -7,11 +7,14 @@ import (
 )
 
 type Product struct {
-	ID        uint
-	Name      string
-	Price     decimal.Decimal
-	Quantity  uint
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	DeletedAt *time.Time
+	ID          uint
+	Name        string
+	Price       decimal.Decimal
+	Stock       uint
+	CategoryID  uint
+	Description string
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+	DeletedAt   *time.Time
+	Category    *Category
 }
