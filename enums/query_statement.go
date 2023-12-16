@@ -1,0 +1,10 @@
+package query_statement
+
+const (
+	INSERT_QUERY   = "INSERT INTO"
+	SELECT_QUERY   = "SELECT "
+	UPDATE_QUERY   = "UPDATE "
+	DELETE_QUERY   = "DELETE FROM "
+	ALL_STATEMENT  = "* "
+	FROM_STATEMENT = "FROM "
+)
