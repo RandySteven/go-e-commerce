@@ -1,0 +1,20 @@
+{
+    "name": "John Doe",
+    "email": "john.doe@gmail.com",
+    "phone_number": "+6281234567890",
+    "birthdate": "YYYY-MM-dd",
+    "addresses":[
+        {
+            "address": "Jln. Slamet",
+            "city": "Pontianak",
+            "postal_code": "11470",
+            "province": "Kalimantan Barat"
+        },
+        {
+            "address": "Jln. Hj. Slamet",
+            "city": "Jakarta Barat",
+            "postal_code": "11471",
+            "province": "D.K.I Jakarta"
+        }
+    ]
+}

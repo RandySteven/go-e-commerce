@@ -9,4 +9,8 @@ type (
 	UserRepository interface {
 		query.Repository[models.User]
 	}
+
+	AddressRepository interface {
+		query.Repository[models.Address]
+	}
 )

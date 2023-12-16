@@ -1,0 +1,8 @@
+{
+    "name": "John Doe",
+    "email": "john.doe@gmail.com",
+    "birthdate": "YYYY-MM-dd",
+    "phone_number": "+6258421323234",
+    "created_at": "timestamp",
+    "updated_at": "timestamp"
+}
