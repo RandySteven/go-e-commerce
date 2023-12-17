@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"encoding/json"
+	"net/http"
 	"reflect"
 	"strings"
 )
@@ -19,4 +21,12 @@ func GetFields(m any) map[string]any {
 		result[t.Field(i).Name] = v.Field(i)
 	}
 	return result
+}
+
+func BindJSON(req *http.Request, request any) error {
+	return json.NewDecoder(req.Body).Decode(&request)
+}
+
+func ContentType(res http.ResponseWriter, contentType string) {
+	res.Header().Set("Content-Type", contentType)
 }

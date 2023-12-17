@@ -1,6 +1,7 @@
 package query_statement
 
 const (
+	CREATE_TABLE = "CREATE TABLE IF NOT EXISTS "
 	INSERT_QUERY   = "INSERT INTO"
 	SELECT_QUERY   = "SELECT "
 	UPDATE_QUERY   = "UPDATE "

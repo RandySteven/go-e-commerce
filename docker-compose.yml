@@ -1,0 +1,42 @@
+version: "3.8"
+
+networks:
+  e_commerce_network:
+    driver: bridge
+
+services:
+  e-commerce-api:
+    images: e-commerce-api
+    ports:
+      - 8080:8080
+    build:
+      context: .
+      dockerfile: /cmd/e-commerce/rest/app.dockerfile
+    env_file:
+      - ./env/e-commerce.docker.yml
+    networks:
+      e_commerce_network:
+    depends_on:
+      postgres:
+        healthcheck:  
+  postgres:
+    image: postgres:latest
+    container_name: postgres_e_commerce
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - ./db/pg_data:/var/lib/postgresql/data
+    env_file:
+      - ./env/e-commerce.docker.yml
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Guboj=25
+      POSTGRES_DB: e_commerce_db
+      port: 5433:5432
+    networks:
+      e_commerce_network:
+  

@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	query_statement "github.com/RandySteven/go-e-commerce.git/enums"
+	query_statement "github.com/RandySteven/go-e-commerce.git/enums/query_statement"
 	"github.com/RandySteven/go-e-commerce.git/utils"
 )
 
