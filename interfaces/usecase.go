@@ -13,4 +13,10 @@ type (
 		LoginUser(ctx context.Context, req *requests.UserLoginRequest) (res *responses.UserLogin, err error)
 		UserDetail(ctx context.Context, id uint) (res *responses.UserDetail, err error)
 	}
+
+	ShopUsecase interface {
+		RegisterShop(ctx context.Context, req *requests.ShopRegisterRequest) (res *responses.ShopResponse, err error)
+		LoginShop(ctx context.Context, req *requests.ShopLoginRequest) (res *responses.ShopLoginResponse, err error)
+		ShopDetail(ctx context.Context, id uint) (res *responses.ShopDetail, err error)
+	}
 )

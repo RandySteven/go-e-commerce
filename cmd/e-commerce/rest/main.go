@@ -5,6 +5,7 @@ import (
 
 	"github.com/RandySteven/go-e-commerce.git/db/postgres"
 	"github.com/RandySteven/go-e-commerce.git/pkg/configs"
+	"github.com/RandySteven/go-e-commerce.git/routers"
 	"github.com/gorilla/mux"
 )
 
@@ -25,8 +26,12 @@ func main() {
 		log.Fatal(err)
 		return
 	}
-	log.Println(repo)
 
 	r := mux.NewRouter()
+
+	handlers := routers.NewHandlers(repo)
+
+	handlers.InitRouter(r)
+
 	config.Run(r)
 }

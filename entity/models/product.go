@@ -12,9 +12,11 @@ type Product struct {
 	Price       decimal.Decimal
 	Stock       uint
 	CategoryID  uint
+	ShopID      uint
 	Description string
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 	DeletedAt   *time.Time
 	Category    *Category
+	Shop        *Shop
 }

@@ -3,6 +3,7 @@ package postgres
 import (
 	"database/sql"
 	"fmt"
+	"log"
 
 	"github.com/RandySteven/go-e-commerce.git/interfaces"
 	"github.com/RandySteven/go-e-commerce.git/pkg/configs"
@@ -25,6 +26,7 @@ func NewRepositories(config *configs.Config) (*Repositories, error) {
 		postgresConn.DbPass,
 		postgresConn.DbName,
 	)
+	log.Println(conn)
 
 	db, err := sql.Open("pgx", conn)
 	if err != nil {

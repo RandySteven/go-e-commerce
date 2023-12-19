@@ -92,9 +92,9 @@ func (c *Config) Run(r *mux.Router) {
 	server := &http.Server{
 		Addr:         c.Server.Host + ":" + c.Server.Port,
 		Handler:      r,
-		ReadTimeout:  c.Server.Timeout.Read,
-		WriteTimeout: c.Server.Timeout.Write,
-		IdleTimeout:  c.Server.Timeout.Idle,
+		ReadTimeout:  c.Server.Timeout.Read * time.Second,
+		WriteTimeout: c.Server.Timeout.Write * time.Second,
+		IdleTimeout:  c.Server.Timeout.Idle * time.Second,
 	}
 
 	signal.Notify(runChan, os.Interrupt, syscall.SIGTSTP)

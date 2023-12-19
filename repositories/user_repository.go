@@ -6,11 +6,35 @@ import (
 
 	"github.com/RandySteven/go-e-commerce.git/entity/models"
 	"github.com/RandySteven/go-e-commerce.git/interfaces"
-	"github.com/RandySteven/go-e-commerce.git/pkg/query"
 )
 
 type userRepository struct {
 	db *sql.DB
+}
+
+// GetByEmail implements interfaces.UserRepository.
+func (repo *userRepository) GetByEmail(ctx context.Context, email string) (*models.User, error) {
+	query := "SELECT id, name, email, birthday, phone_number FROM users WHERE email = $1"
+	stmt, err := repo.db.PrepareContext(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	defer stmt.Close()
+
+	user := &models.User{}
+	err = stmt.QueryRow(email).
+		Scan(
+			&user.ID,
+			&user.Name,
+			&user.Email,
+			&user.Birthday,
+			&user.PhoneNumber,
+		)
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
 }
 
 // Delete implements interfaces.UserRepository.
@@ -30,7 +54,23 @@ func (*userRepository) FindOne(ctx context.Context) (res *models.User, err error
 
 // Save implements interfaces.UserRepository.
 func (repo *userRepository) Save(ctx context.Context, req *models.User) (res *models.User, err error) {
-	return query.NewPostgresRepository[models.User](repo.db).Save(ctx, req)
+	query := "INSERT INTO users (name, email, password, birthday, phone_number) VALUES ($1, $2, $3, $4, $5) RETURNING ID"
+	prepare, err := repo.db.PrepareContext(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	defer prepare.Close()
+
+	var userId uint
+	err = prepare.
+		QueryRowContext(ctx, req.Name, req.Email, req.Password, req.Birthday, req.PhoneNumber).
+		Scan(&userId)
+	if err != nil {
+		return nil, err
+	}
+	req.ID = userId
+
+	return req, nil
 }
 
 // Update implements interfaces.UserRepository.

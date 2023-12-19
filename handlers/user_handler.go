@@ -17,7 +17,20 @@ type UserHandler struct {
 
 // LoginUser implements interfaces.UserHandler.
 func (handler *UserHandler) LoginUser(res http.ResponseWriter, req *http.Request) {
-	panic("unimplemented")
+	utils.ContentType(res, content_type.ApplicationJson)
+	var loginRequest *requests.UserLoginRequest
+	err := utils.BindJSON(req, &loginRequest)
+	if err != nil {
+		return
+	}
+
+	loginRes, err := handler.usecase.LoginUser(context.Background(), loginRequest)
+	if err != nil {
+		return
+	}
+
+	res.WriteHeader(http.StatusOK)
+	json.NewEncoder(res).Encode(loginRes)
 }
 
 // RegisterUser implements interfaces.UserHandler.

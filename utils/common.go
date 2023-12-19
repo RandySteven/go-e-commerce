@@ -5,6 +5,9 @@ import (
 	"net/http"
 	"reflect"
 	"strings"
+	"time"
+
+	"github.com/RandySteven/go-e-commerce.git/apperror"
 )
 
 func GetModelName(m any) string {
@@ -21,6 +24,17 @@ func GetFields(m any) map[string]any {
 		result[t.Field(i).Name] = v.Field(i)
 	}
 	return result
+}
+
+func DateValidation(birthdate time.Time) error {
+	by, _, _ := birthdate.Date()
+	today := time.Now()
+	ty, _, _ := today.Date()
+	age := ty - by
+	if age < 18 {
+		return &apperror.ErrAgeValidation{}
+	}
+	return nil
 }
 
 func BindJSON(req *http.Request, request any) error {
