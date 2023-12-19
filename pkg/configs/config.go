@@ -2,6 +2,7 @@ package configs
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
@@ -10,6 +11,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/gorilla/mux"
 	"gopkg.in/yaml.v2"
 )
 
@@ -53,6 +55,20 @@ func NewConfig(configPath string) (*Config, error) {
 	return config, nil
 }
 
+func ParseFlags() (string, error) {
+	var configPath string
+
+	flag.StringVar(&configPath, "config", "./config.yml", "path to config file")
+
+	flag.Parse()
+
+	if err := ValidateConfigPath(configPath); err != nil {
+		return "", err
+	}
+
+	return configPath, nil
+}
+
 func ValidateConfigPath(path string) error {
 	s, err := os.Stat(path)
 	if err != nil {
@@ -66,7 +82,8 @@ func ValidateConfigPath(path string) error {
 	return nil
 }
 
-func (c *Config) Run(r *http.ServeMux) {
+func (c *Config) Run(r *mux.Router) {
+	log.Println("Start to run server")
 	var runChan = make(chan os.Signal)
 
 	ctx, cancel := context.WithTimeout(context.Background(), c.Server.Timeout.Server)

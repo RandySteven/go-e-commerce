@@ -39,3 +39,7 @@ func (*addressRepository) Update(ctx context.Context, req *models.Address) (res 
 }
 
 var _ interfaces.AddressRepository = &addressRepository{}
+
+func NewAddressRepository(db *sql.DB) *addressRepository {
+	return &addressRepository{db: db}
+}
