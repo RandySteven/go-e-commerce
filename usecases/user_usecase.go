@@ -31,8 +31,8 @@ func (usecase *userUsecase) LoginUser(ctx context.Context, req *requests.UserLog
 
 	expTime := time.Now().Add(time.Hour * 1)
 	claims := &auth.JWTClaim{
-		ID:    user.ID,
-		Email: user.Email,
+		UserID: &user.ID,
+		Email:  user.Email,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer:    "APPLICATION",
 			IssuedAt:  jwt.NewNumericDate(time.Now()),

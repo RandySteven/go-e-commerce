@@ -9,6 +9,7 @@ import (
 	"github.com/RandySteven/go-e-commerce.git/enums/content_type"
 	"github.com/RandySteven/go-e-commerce.git/interfaces"
 	"github.com/RandySteven/go-e-commerce.git/utils"
+	"github.com/google/uuid"
 )
 
 type UserHandler struct {
@@ -18,13 +19,17 @@ type UserHandler struct {
 // LoginUser implements interfaces.UserHandler.
 func (handler *UserHandler) LoginUser(res http.ResponseWriter, req *http.Request) {
 	utils.ContentType(res, content_type.ApplicationJson)
-	var loginRequest *requests.UserLoginRequest
+	var (
+		requestId    = uuid.NewString()
+		ctx          = context.WithValue(req.Context(), "request_id", requestId)
+		loginRequest *requests.UserLoginRequest
+	)
 	err := utils.BindJSON(req, &loginRequest)
 	if err != nil {
 		return
 	}
 
-	loginRes, err := handler.usecase.LoginUser(context.Background(), loginRequest)
+	loginRes, err := handler.usecase.LoginUser(ctx, loginRequest)
 	if err != nil {
 		return
 	}
@@ -36,13 +41,17 @@ func (handler *UserHandler) LoginUser(res http.ResponseWriter, req *http.Request
 // RegisterUser implements interfaces.UserHandler.
 func (handler *UserHandler) RegisterUser(res http.ResponseWriter, req *http.Request) {
 	utils.ContentType(res, content_type.ApplicationJson)
-	var userRegister *requests.UserRegisterRequest
+	var (
+		requestId    = uuid.NewString()
+		ctx          = context.WithValue(req.Context(), "request_id", requestId)
+		userRegister *requests.UserRegisterRequest
+	)
 	err := utils.BindJSON(req, &userRegister)
 	if err != nil {
 		return
 	}
 
-	userRes, err := handler.usecase.RegisterUser(context.Background(), userRegister)
+	userRes, err := handler.usecase.RegisterUser(ctx, userRegister)
 	if err != nil {
 		return
 	}

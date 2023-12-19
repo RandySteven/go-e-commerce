@@ -7,4 +7,8 @@ type (
 		RegisterUser(res http.ResponseWriter, req *http.Request)
 		LoginUser(res http.ResponseWriter, req *http.Request)
 	}
+
+	ShopHandler interface {
+		RegisterShop()
+	}
 )
