@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/RandySteven/go-e-commerce.git/entity/payload/requests"
@@ -48,11 +49,13 @@ func (handler *UserHandler) RegisterUser(res http.ResponseWriter, req *http.Requ
 	)
 	err := utils.BindJSON(req, &userRegister)
 	if err != nil {
+		log.Fatal(err)
 		return
 	}
 
 	userRes, err := handler.usecase.RegisterUser(ctx, userRegister)
 	if err != nil {
+		log.Fatal(err)
 		return
 	}
 

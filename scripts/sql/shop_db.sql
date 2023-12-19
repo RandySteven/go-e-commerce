@@ -1,3 +1,4 @@
+DROP DATABASE e_commerce_db;
 CREATE DATABASE e_commerce_db;
 
 CREATE SEQUENCE IF NOT EXISTS my_sequence
