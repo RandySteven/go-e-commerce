@@ -9,6 +9,7 @@ import (
 
 type Handlers struct {
 	interfaces.UserHandler
+	interfaces.ShopHandler
 }
 
 func NewHandlers(repo *postgres.Repositories) *Handlers {

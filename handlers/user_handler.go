@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"context"
-	"encoding/json"
 	"log"
 	"net/http"
 
@@ -35,8 +34,7 @@ func (handler *UserHandler) LoginUser(res http.ResponseWriter, req *http.Request
 		return
 	}
 
-	res.WriteHeader(http.StatusOK)
-	json.NewEncoder(res).Encode(loginRes)
+	utils.ResponseHandler(res, http.StatusOK, loginRes)
 }
 
 // RegisterUser implements interfaces.UserHandler.
@@ -59,8 +57,7 @@ func (handler *UserHandler) RegisterUser(res http.ResponseWriter, req *http.Requ
 		return
 	}
 
-	res.WriteHeader(http.StatusCreated)
-	json.NewEncoder(res).Encode(userRes)
+	utils.ResponseHandler(res, http.StatusCreated, userRes)
 }
 
 func NewUserHandler(usecase interfaces.UserUsecase) *UserHandler {

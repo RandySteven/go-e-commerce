@@ -9,6 +9,7 @@ type (
 	}
 
 	ShopHandler interface {
-		RegisterShop()
+		RegisterShop(res http.ResponseWriter, req *http.Request)
+		LoginShop(res http.ResponseWriter, req *http.Request)
 	}
 )

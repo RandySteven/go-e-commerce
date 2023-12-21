@@ -14,6 +14,7 @@ import (
 type Repositories struct {
 	interfaces.AddressRepository
 	interfaces.UserRepository
+	interfaces.ShopRepository
 	db *sql.DB
 }
 
@@ -36,6 +37,7 @@ func NewRepositories(config *configs.Config) (*Repositories, error) {
 	return &Repositories{
 		AddressRepository: repositories.NewAddressRepository(db),
 		UserRepository:    repositories.NewUserRepository(db),
+		ShopRepository:    repositories.NewShopRepository(db),
 		db:                db,
 	}, nil
 }
