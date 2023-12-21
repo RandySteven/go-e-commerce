@@ -29,7 +29,13 @@ func (repo *shopRepository) FindOne(ctx context.Context) (res *models.Shop, err 
 
 // GetByEmail implements interfaces.ShopRepository.
 func (repo *shopRepository) GetByEmail(ctx context.Context, email string) (*models.Shop, error) {
-	panic("unimplemented")
+	query := "SELECT email FROM shops WHERE email = $1"
+	var shop *models.Shop
+	err := repo.db.QueryRowContext(ctx, query, email).Scan(&shop)
+	if err != nil {
+		return nil, err
+	}
+	return shop, nil
 }
 
 // Save implements interfaces.ShopRepository.

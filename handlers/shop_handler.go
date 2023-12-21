@@ -17,7 +17,24 @@ type ShopHandler struct {
 
 // LoginShop implements interfaces.ShopHandler.
 func (h *ShopHandler) LoginShop(res http.ResponseWriter, req *http.Request) {
-	panic("unimplemented")
+	utils.ContentType(res, content_type.ApplicationJson)
+	var (
+		requestId = uuid.NewString()
+		ctx       = context.WithValue(req.Context(), "request_id", requestId)
+		shopLogin *requests.ShopLoginRequest
+	)
+
+	err := utils.BindJSON(req, shopLogin)
+	if err != nil {
+		return
+	}
+
+	loginRes, err := h.usecase.LoginShop(ctx, shopLogin)
+	if err != nil {
+		return
+	}
+
+	utils.ResponseHandler(res, http.StatusOK, loginRes)
 }
 
 // RegisterShop implements interfaces.ShopHandler.

@@ -4,12 +4,16 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"time"
 
+	"github.com/RandySteven/go-e-commerce.git/apperror"
 	"github.com/RandySteven/go-e-commerce.git/entity/models"
 	"github.com/RandySteven/go-e-commerce.git/entity/payload/requests"
 	"github.com/RandySteven/go-e-commerce.git/entity/payload/responses"
 	"github.com/RandySteven/go-e-commerce.git/interfaces"
+	"github.com/RandySteven/go-e-commerce.git/pkg/auth"
 	"github.com/RandySteven/go-e-commerce.git/utils"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 type shopUsecase struct {
@@ -23,8 +27,30 @@ func (usecase *shopUsecase) LoginShop(ctx context.Context, req *requests.ShopLog
 		return nil, err
 	}
 
-	// if !utils.IsPasswordValid(shopExists.Password, req.Password){
-	// }
+	if !utils.IsPasswordValid(shopExists.Password, req.Password) {
+		return nil, &apperror.ErrEmailAndPasswordNotMatch{}
+	}
+
+	expTime := time.Now().Add(time.Hour * 1)
+	claims := &auth.JWTClaim{
+		ShopID: &shopExists.ID,
+		Email:  shopExists.Email,
+		RegisteredClaims: jwt.RegisteredClaims{
+			Issuer:    "APPLICATION",
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+			ExpiresAt: jwt.NewNumericDate(expTime),
+		},
+	}
+
+	tokenAlgo := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	token, err := tokenAlgo.SignedString(auth.JWT_KEY)
+	if err != nil {
+		return nil, err
+	}
+	res = &responses.ShopLoginResponse{
+		Token: token,
+	}
+	return res, nil
 }
 
 // RegisterShop implements interfaces.ShopUsecase.
@@ -64,7 +90,7 @@ func (usecase *shopUsecase) RegisterShop(ctx context.Context, req *requests.Shop
 }
 
 // ShopDetail implements interfaces.ShopUsecase.
-func (*shopUsecase) ShopDetail(ctx context.Context, id uint) (res *responses.ShopDetail, err error) {
+func (usecase *shopUsecase) ShopDetail(ctx context.Context, id uint) (res *responses.ShopDetail, err error) {
 	panic("unimplemented")
 }
 
