@@ -19,11 +19,33 @@ func (repo *shopRepository) Delete(ctx context.Context, req *models.Shop) (res *
 
 // FindAll implements interfaces.ShopRepository.
 func (repo *shopRepository) FindAll(ctx context.Context) (res []models.Shop, err error) {
-	panic("unimplemented")
+	query := "SELECT id, name, email, phone_number, created_at, updated_at FROM shops"
+	rows, err := repo.db.QueryContext(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var shop *models.Shop
+		err = rows.Scan(
+			&shop.ID,
+			&shop.Name,
+			&shop.Email,
+			&shop.PhoneNumber,
+			&shop.CreatedAt,
+			&shop.UpdatedAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+		res = append(res, *shop)
+	}
+	return res, nil
 }
 
 // FindOne implements interfaces.ShopRepository.
-func (repo *shopRepository) FindOne(ctx context.Context) (res *models.Shop, err error) {
+func (repo *shopRepository) FindOneById(ctx context.Context, id uint) (res *models.Shop, err error) {
 	panic("unimplemented")
 }
 

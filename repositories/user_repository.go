@@ -38,18 +38,23 @@ func (repo *userRepository) GetByEmail(ctx context.Context, email string) (*mode
 }
 
 // Delete implements interfaces.UserRepository.
-func (*userRepository) Delete(ctx context.Context, req *models.User) (res *models.User, err error) {
+func (repo *userRepository) Delete(ctx context.Context, req *models.User) (res *models.User, err error) {
 	panic("unimplemented")
 }
 
 // FindAll implements interfaces.UserRepository.
-func (*userRepository) FindAll(ctx context.Context) (res []models.User, err error) {
+func (repo *userRepository) FindAll(ctx context.Context) (res []models.User, err error) {
 	panic("unimplemented")
 }
 
 // FindOne implements interfaces.UserRepository.
-func (*userRepository) FindOne(ctx context.Context) (res *models.User, err error) {
-	panic("unimplemented")
+func (repo *userRepository) FindOneById(ctx context.Context, id uint) (res *models.User, err error) {
+	query := "SELECT * FROM users WHERE id = $1"
+	err = repo.db.QueryRowContext(ctx, query, id).Scan(&res)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
 }
 
 // Save implements interfaces.UserRepository.

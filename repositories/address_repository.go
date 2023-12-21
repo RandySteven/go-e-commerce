@@ -24,7 +24,7 @@ func (*addressRepository) FindAll(ctx context.Context) (res []models.Address, er
 }
 
 // FindOne implements interfaces.AddressRepository.
-func (*addressRepository) FindOne(ctx context.Context) (res *models.Address, err error) {
+func (*addressRepository) FindOneById(ctx context.Context, id uint) (res *models.Address, err error) {
 	panic("unimplemented")
 }
 

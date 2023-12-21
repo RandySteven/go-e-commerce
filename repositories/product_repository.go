@@ -13,18 +13,28 @@ type productRepository struct {
 }
 
 // Delete implements interfaces.ProductRepository.
-func (*productRepository) Delete(ctx context.Context, req *models.Product) (res *models.Product, err error) {
+func (repo *productRepository) Delete(ctx context.Context, req *models.Product) (res *models.Product, err error) {
 	panic("unimplemented")
 }
 
 // FindAll implements interfaces.ProductRepository.
-func (*productRepository) FindAll(ctx context.Context) (res []models.Product, err error) {
-	panic("unimplemented")
+func (repo *productRepository) FindAll(ctx context.Context) (res []models.Product, err error) {
+	query := "SELECT id, name, price, stock, description, shop_id, created_at, updated_at FROM products"
+	rows, err := repo.db.QueryContext(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
 }
 
 // FindOne implements interfaces.ProductRepository.
-func (*productRepository) FindOne(ctx context.Context) (res *models.Product, err error) {
-	panic("unimplemented")
+func (repo *productRepository) FindOneById(ctx context.Context, id uint) (res *models.Product, err error) {
+	query := "SELECT * FROM products WHERE id = $1"
+	err = repo.db.QueryRowContext(ctx, query, id).Scan(&res)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
 }
 
 // Save implements interfaces.ProductRepository.

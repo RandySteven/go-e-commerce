@@ -13,7 +13,7 @@ import (
 type Repository[T any] interface {
 	Save(ctx context.Context, req *T) (res *T, err error)
 	FindAll(ctx context.Context) (res []T, err error)
-	FindOne(ctx context.Context) (res *T, err error)
+	FindOneById(ctx context.Context, id uint) (res *T, err error)
 	Delete(ctx context.Context, req *T) (res *T, err error)
 	Update(ctx context.Context, req *T) (res *T, err error)
 }
