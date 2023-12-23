@@ -14,7 +14,10 @@ type Handlers struct {
 
 func NewHandlers(repo *postgres.Repositories) *Handlers {
 	userUsecase := usecases.NewUserUsecase(repo.UserRepository)
+	shopUsecase := usecases.NewShopUsecase(repo.ShopRepository)
+
 	return &Handlers{
 		UserHandler: handlers.NewUserHandler(userUsecase),
+		ShopHandler: handlers.NewShopHandler(shopUsecase),
 	}
 }

@@ -51,9 +51,20 @@ func (repo *shopRepository) FindOneById(ctx context.Context, id uint) (res *mode
 
 // GetByEmail implements interfaces.ShopRepository.
 func (repo *shopRepository) GetByEmail(ctx context.Context, email string) (*models.Shop, error) {
-	query := "SELECT email FROM shops WHERE email = $1"
-	var shop *models.Shop
-	err := repo.db.QueryRowContext(ctx, query, email).Scan(&shop)
+	query := "SELECT id, name, email, phone_number FROM shops WHERE email = $1"
+	var shop = &models.Shop{}
+	stmt, err := repo.db.PrepareContext(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	defer stmt.Close()
+
+	err = stmt.QueryRow(email).Scan(
+		&shop.ID,
+		&shop.Name,
+		&shop.Email,
+		&shop.PhoneNumber,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -63,7 +74,7 @@ func (repo *shopRepository) GetByEmail(ctx context.Context, email string) (*mode
 // Save implements interfaces.ShopRepository.
 func (repo *shopRepository) Save(ctx context.Context, req *models.Shop) (res *models.Shop, err error) {
 	query := "INSERT INTO shops (name, email, password, phone_number) VALUES " +
-		"($1, $2, $3, $4)"
+		"($1, $2, $3, $4) RETURNING ID"
 	stmt, err := repo.db.PrepareContext(ctx, query)
 	if err != nil {
 		return nil, err

@@ -2,6 +2,8 @@ package handlers
 
 import (
 	"context"
+	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/RandySteven/go-e-commerce.git/entity/payload/requests"
@@ -15,6 +17,12 @@ type ShopHandler struct {
 	usecase interfaces.ShopUsecase
 }
 
+// ShopDetail implements interfaces.ShopHandler.
+func (*ShopHandler) ShopDetail(res http.ResponseWriter, req *http.Request) {
+	ctx := req.Context()
+	log.Println(ctx.Value("role_id"))
+}
+
 // LoginShop implements interfaces.ShopHandler.
 func (h *ShopHandler) LoginShop(res http.ResponseWriter, req *http.Request) {
 	utils.ContentType(res, content_type.ApplicationJson)
@@ -24,7 +32,7 @@ func (h *ShopHandler) LoginShop(res http.ResponseWriter, req *http.Request) {
 		shopLogin *requests.ShopLoginRequest
 	)
 
-	err := utils.BindJSON(req, shopLogin)
+	err := utils.BindJSON(req, &shopLogin)
 	if err != nil {
 		return
 	}
@@ -46,17 +54,19 @@ func (h *ShopHandler) RegisterShop(res http.ResponseWriter, req *http.Request) {
 		shopRegister *requests.ShopRegisterRequest
 	)
 
-	err := utils.BindJSON(req, shopRegister)
+	err := utils.BindJSON(req, &shopRegister)
 	if err != nil {
 		return
 	}
 
 	shopRes, err := h.usecase.RegisterShop(ctx, shopRegister)
 	if err != nil {
+		log.Println(err)
 		return
 	}
 
-	utils.ResponseHandler(res, http.StatusCreated, shopRes)
+	res.WriteHeader(http.StatusCreated)
+	json.NewEncoder(res).Encode(shopRes)
 }
 
 func NewShopHandler(usecase interfaces.ShopUsecase) *ShopHandler {

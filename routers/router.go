@@ -3,16 +3,27 @@ package routers
 import (
 	"net/http"
 
+	"github.com/RandySteven/go-e-commerce.git/middlewares"
 	"github.com/gorilla/mux"
 )
 
 func (h *Handlers) InitRouter(r *mux.Router) {
 
+	userAuth := r.PathPrefix("/users").Subrouter()
+	userAuth.HandleFunc("/register", h.UserHandler.RegisterUser).Methods(http.MethodPost)
+	userAuth.HandleFunc("/login", h.UserHandler.LoginUser).Methods(http.MethodPost)
+
 	userGroup := r.PathPrefix("/users").Subrouter()
-	userGroup.HandleFunc("/register", h.UserHandler.RegisterUser).Methods(http.MethodPost)
-	userGroup.HandleFunc("/login", h.UserHandler.LoginUser).Methods(http.MethodPost)
-	// userGroup.Use(middlewares.AuthenticationMiddleware)
-	// userGroup.Use(middlewares.AuthorizationMiddleware)
-	userGroup.HandleFunc("", h.UserHandler.LoginUser).Methods(http.MethodGet)
+	userGroup.Use(middlewares.AuthenticationMiddleware, middlewares.AuthorizationMiddleware)
+	userGroup.HandleFunc("", h.UserHandler.TestGetUser).Methods(http.MethodGet)
+
+	shopAuth := r.PathPrefix("/shops").Subrouter()
+	shopAuth.Use(middlewares.TimeMiddleware)
+	shopAuth.HandleFunc("/register", h.ShopHandler.RegisterShop).Methods(http.MethodPost)
+	shopAuth.HandleFunc("/login", h.ShopHandler.LoginShop).Methods(http.MethodPost)
+
+	shopGroup := r.PathPrefix("/shops").Subrouter()
+	shopGroup.Use(middlewares.AuthenticationMiddleware)
+	shopGroup.HandleFunc("", h.ShopHandler.ShopDetail).Methods(http.MethodGet)
 
 }

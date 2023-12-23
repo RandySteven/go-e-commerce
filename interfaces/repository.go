@@ -32,6 +32,7 @@ type (
 
 	ProductRepository interface {
 		query.Repository[models.Product]
+		FindByPagination(ctx context.Context, limitItem uint, page uint) ([]models.Product, error)
 	}
 
 	TransactionRepository interface {

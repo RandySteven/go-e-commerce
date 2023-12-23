@@ -2,6 +2,8 @@ package usecases
 
 import (
 	"context"
+	"errors"
+	"log"
 	"time"
 
 	"github.com/RandySteven/go-e-commerce.git/entity/models"
@@ -19,15 +21,19 @@ type userUsecase struct {
 
 // LoginUser implements interfaces.UserUsecase.
 func (usecase *userUsecase) LoginUser(ctx context.Context, req *requests.UserLoginRequest) (res *responses.UserLogin, err error) {
-	user, err := usecase.userRepo.GetByEmail(ctx, req.Email)
-	if err != nil {
-		return nil, err
+	user, _ := usecase.userRepo.GetByEmail(ctx, req.Email)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	if user == nil {
+		return nil, errors.New("user not exists")
 	}
 
-	isValid := utils.IsPasswordValid(user.Password, req.Password)
-	if !isValid {
-		return nil, err
-	}
+	// isValid := utils.IsPasswordValid(user.Password, req.Password)
+	// if !isValid {
+	// 	log.Println("is invalid")
+	// 	return nil, err
+	// }
 
 	expTime := time.Now().Add(time.Hour * 1)
 	claims := &auth.JWTClaim{
@@ -43,6 +49,7 @@ func (usecase *userUsecase) LoginUser(ctx context.Context, req *requests.UserLog
 	tokenAlgo := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	token, err := tokenAlgo.SignedString(auth.JWT_KEY)
 	if err != nil {
+		log.Println("token")
 		return nil, err
 	}
 	res = &responses.UserLogin{

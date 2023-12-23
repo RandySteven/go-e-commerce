@@ -3,13 +3,47 @@ package repositories
 import (
 	"context"
 	"database/sql"
+	"fmt"
 
 	"github.com/RandySteven/go-e-commerce.git/entity/models"
 	"github.com/RandySteven/go-e-commerce.git/interfaces"
+	"github.com/RandySteven/go-e-commerce.git/scripts/gosql"
 )
 
 type productRepository struct {
 	db *sql.DB
+}
+
+// FindByPagination implements interfaces.ProductRepository.
+func (repo *productRepository) FindByPagination(ctx context.Context, limitItem uint, page uint) (res []models.Product, err error) {
+	repo.db.ExecContext(ctx, gosql.ProductPaginationFunctionQuery)
+	lastId := (page * limitItem) - limitItem
+	query := fmt.Sprintf(`SELECT id, name, price, stock, description, shop_id, 
+	created_at, updated_at FROM GetProductPage(%d, %d)`, limitItem, lastId)
+	rows, err := repo.db.QueryContext(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var product *models.Product
+		err = rows.Scan(
+			&product.ID,
+			&product.Name,
+			&product.Price,
+			&product.Stock,
+			&product.Description,
+			&product.ShopID,
+			&product.CreatedAt,
+			&product.UpdatedAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+		res = append(res, *product)
+	}
+	return res, nil
 }
 
 // Delete implements interfaces.ProductRepository.
@@ -25,6 +59,25 @@ func (repo *productRepository) FindAll(ctx context.Context) (res []models.Produc
 		return nil, err
 	}
 	defer rows.Close()
+
+	for rows.Next() {
+		var product *models.Product
+		err = rows.Scan(
+			&product.ID,
+			&product.Name,
+			&product.Price,
+			&product.Stock,
+			&product.Description,
+			&product.ShopID,
+			&product.CreatedAt,
+			&product.UpdatedAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+		res = append(res, *product)
+	}
+	return res, nil
 }
 
 // FindOne implements interfaces.ProductRepository.
@@ -49,7 +102,7 @@ func (repo *productRepository) Save(ctx context.Context, req *models.Product) (r
 	defer stmt.Close()
 
 	var productId uint = 0
-	err = stmt.QueryRow(
+	err = stmt.QueryRowContext(ctx,
 		req.Name,
 		req.Price,
 		req.Stock,

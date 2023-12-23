@@ -2,6 +2,7 @@ package middlewares
 
 import (
 	"context"
+	"log"
 	"net/http"
 
 	"github.com/RandySteven/go-e-commerce.git/enums/content_type"
@@ -15,8 +16,8 @@ func AuthenticationMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		utils.ContentType(w, content_type.ApplicationJson)
 
-		authToken := w.Header().Get("Authorization")
-
+		authToken := r.Header.Get("Authorization")
+		log.Println(authToken)
 		tokenStr := authToken[len("Bearer "):]
 		claims := &auth.JWTClaim{}
 
@@ -36,7 +37,7 @@ func AuthenticationMiddleware(next http.Handler) http.Handler {
 			claims.RoleID = userrole.ShopRole
 		}
 		ctx3 := context.WithValue(ctx2, "role_id", claims.RoleID)
-
+		log.Println(ctx3)
 		next.ServeHTTP(w, r.WithContext(ctx3))
 	})
 }

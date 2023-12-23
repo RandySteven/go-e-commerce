@@ -16,6 +16,13 @@ type UserHandler struct {
 	usecase interfaces.UserUsecase
 }
 
+// TestGetUser implements interfaces.UserHandler.
+func (h *UserHandler) TestGetUser(res http.ResponseWriter, req *http.Request) {
+	log.Println("test")
+	ctx := req.Context()
+	log.Println(ctx.Value("role_id"))
+}
+
 // LoginUser implements interfaces.UserHandler.
 func (handler *UserHandler) LoginUser(res http.ResponseWriter, req *http.Request) {
 	utils.ContentType(res, content_type.ApplicationJson)
@@ -31,6 +38,7 @@ func (handler *UserHandler) LoginUser(res http.ResponseWriter, req *http.Request
 
 	loginRes, err := handler.usecase.LoginUser(ctx, loginRequest)
 	if err != nil {
+		log.Println("login err : ", err.Error())
 		return
 	}
 

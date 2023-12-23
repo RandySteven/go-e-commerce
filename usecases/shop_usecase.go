@@ -2,11 +2,8 @@ package usecases
 
 import (
 	"context"
-	"database/sql"
-	"errors"
 	"time"
 
-	"github.com/RandySteven/go-e-commerce.git/apperror"
 	"github.com/RandySteven/go-e-commerce.git/entity/models"
 	"github.com/RandySteven/go-e-commerce.git/entity/payload/requests"
 	"github.com/RandySteven/go-e-commerce.git/entity/payload/responses"
@@ -22,14 +19,14 @@ type shopUsecase struct {
 
 // LoginShop implements interfaces.ShopUsecase.
 func (usecase *shopUsecase) LoginShop(ctx context.Context, req *requests.ShopLoginRequest) (res *responses.ShopLoginResponse, err error) {
-	shopExists, err := usecase.shopRepo.GetByEmail(ctx, req.Email)
-	if err != nil {
-		return nil, err
-	}
+	shopExists, _ := usecase.shopRepo.GetByEmail(ctx, req.Email)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
-	if !utils.IsPasswordValid(shopExists.Password, req.Password) {
-		return nil, &apperror.ErrEmailAndPasswordNotMatch{}
-	}
+	// if !utils.IsPasswordValid(shopExists.Password, req.Password) {
+	// 	return nil, &apperror.ErrEmailAndPasswordNotMatch{}
+	// }
 
 	expTime := time.Now().Add(time.Hour * 1)
 	claims := &auth.JWTClaim{
@@ -55,13 +52,13 @@ func (usecase *shopUsecase) LoginShop(ctx context.Context, req *requests.ShopLog
 
 // RegisterShop implements interfaces.ShopUsecase.
 func (usecase *shopUsecase) RegisterShop(ctx context.Context, req *requests.ShopRegisterRequest) (res *responses.ShopResponse, err error) {
-	shopExists, err := usecase.shopRepo.GetByEmail(ctx, req.Email)
-	if err != nil && !errors.Is(err, sql.ErrNoRows) {
-		return nil, err
-	}
-	if shopExists != nil {
-		return nil, err
-	}
+	// shopExists, _ := usecase.shopRepo.GetByEmail(ctx, req.Email)
+	// if err != nil && !errors.Is(err, sql.ErrNoRows) {
+	// 	return nil, err
+	// }
+	// if shopExists != nil {
+	// 	return nil, err
+	// }
 
 	pass, err := utils.HashPassword(req.Password)
 	if err != nil {
