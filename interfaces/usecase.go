@@ -6,6 +6,7 @@ import (
 	"github.com/RandySteven/go-e-commerce.git/entity/models"
 	"github.com/RandySteven/go-e-commerce.git/entity/payload/requests"
 	"github.com/RandySteven/go-e-commerce.git/entity/payload/responses"
+	"github.com/RandySteven/go-e-commerce.git/pkg/query"
 )
 
 type (
@@ -23,6 +24,6 @@ type (
 
 	ProductUsecase interface {
 		AddProduct(ctx context.Context, req *requests.ProductRequest) (res *models.Product, err error)
-		GetAllProducts(ctx context.Context) (res []*models.Product, err error)
+		GetAllProducts(ctx context.Context, param *query.Param) (res []models.Product, err error)
 	}
 )

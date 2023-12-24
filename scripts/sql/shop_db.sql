@@ -6,6 +6,11 @@ CREATE SEQUENCE IF NOT EXISTS my_sequence
 SELECT * FROM users;
 SELECT * FROM shops;
 
+INSERT INTO categories (category)
+VALUES
+    ('Test 1'),
+    ('Test 2');
+
 CREATE TABLE IF NOT EXISTS users (
     id BIGSERIAL PRIMARY KEY NOT NULL,
     name VARCHAR NOT NULL,

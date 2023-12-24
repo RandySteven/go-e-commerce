@@ -26,4 +26,8 @@ func (h *Handlers) InitRouter(r *mux.Router) {
 	shopGroup.Use(middlewares.AuthenticationMiddleware)
 	shopGroup.HandleFunc("", h.ShopHandler.ShopDetail).Methods(http.MethodGet)
 
+	productGroup := r.PathPrefix("/products").Subrouter()
+	productGroup.Use(middlewares.AuthenticationMiddleware, middlewares.AuthorizationMiddleware)
+	productGroup.HandleFunc("", h.ProductHandler.GetAllProducts).Methods(http.MethodGet)
+	productGroup.HandleFunc("", h.ProductHandler.CreateProduct).Methods(http.MethodPost)
 }
