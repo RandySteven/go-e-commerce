@@ -16,6 +16,7 @@ type Repositories struct {
 	interfaces.UserRepository
 	interfaces.ShopRepository
 	interfaces.ProductRepository
+	interfaces.CategoryRepository
 	db *sql.DB
 }
 
@@ -36,10 +37,11 @@ func NewRepositories(config *configs.Config) (*Repositories, error) {
 	}
 
 	return &Repositories{
-		AddressRepository: repositories.NewAddressRepository(db),
-		UserRepository:    repositories.NewUserRepository(db),
-		ShopRepository:    repositories.NewShopRepository(db),
-		ProductRepository: repositories.NewProductRepository(db),
-		db:                db,
+		AddressRepository:  repositories.NewAddressRepository(db),
+		UserRepository:     repositories.NewUserRepository(db),
+		ShopRepository:     repositories.NewShopRepository(db),
+		ProductRepository:  repositories.NewProductRepository(db),
+		CategoryRepository: repositories.NewCategoryRepository(db),
+		db:                 db,
 	}, nil
 }

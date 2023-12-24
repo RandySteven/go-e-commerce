@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/RandySteven/go-e-commerce.git/db/postgres"
+	"github.com/RandySteven/go-e-commerce.git/middlewares"
 	"github.com/RandySteven/go-e-commerce.git/pkg/configs"
 	"github.com/RandySteven/go-e-commerce.git/routers"
 	"github.com/gorilla/mux"
@@ -30,7 +31,7 @@ func main() {
 	r := mux.NewRouter()
 
 	handlers := routers.NewHandlers(repo)
-
+	r.Use(middlewares.ErrorMiddleware, middlewares.TimeMiddleware)
 	handlers.InitRouter(r)
 
 	config.Run(r)

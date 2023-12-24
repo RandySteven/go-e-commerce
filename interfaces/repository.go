@@ -42,4 +42,8 @@ type (
 	CartRepository interface {
 		InsertToCart(ctx context.Context, cart *models.Cart) (*models.Cart, error)
 	}
+
+	CategoryRepository interface {
+		query.Repository[models.Category]
+	}
 )

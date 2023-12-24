@@ -6,6 +6,7 @@ import (
 
 	"github.com/RandySteven/go-e-commerce.git/entity/models"
 	"github.com/RandySteven/go-e-commerce.git/interfaces"
+	"github.com/RandySteven/go-e-commerce.git/scripts/gosql"
 )
 
 type userRepository struct {
@@ -14,7 +15,7 @@ type userRepository struct {
 
 // GetByEmail implements interfaces.UserRepository.
 func (repo *userRepository) GetByEmail(ctx context.Context, email string) (*models.User, error) {
-	query := "SELECT id, name, email, birthday, phone_number FROM users WHERE email = $1"
+	query := gosql.SelectUserByEmail
 	stmt, err := repo.db.PrepareContext(ctx, query)
 	if err != nil {
 		return nil, err
@@ -49,7 +50,7 @@ func (repo *userRepository) FindAll(ctx context.Context) (res []models.User, err
 
 // FindOne implements interfaces.UserRepository.
 func (repo *userRepository) FindOneById(ctx context.Context, id uint) (res *models.User, err error) {
-	query := "SELECT * FROM users WHERE id = $1"
+	query := gosql.SelectUserById
 	err = repo.db.QueryRowContext(ctx, query, id).Scan(&res)
 	if err != nil {
 		return nil, err
@@ -59,16 +60,11 @@ func (repo *userRepository) FindOneById(ctx context.Context, id uint) (res *mode
 
 // Save implements interfaces.UserRepository.
 func (repo *userRepository) Save(ctx context.Context, req *models.User) (res *models.User, err error) {
-	query := "INSERT INTO users (name, email, password, birthday, phone_number) VALUES ($1, $2, $3, $4, $5) RETURNING ID"
-	prepare, err := repo.db.PrepareContext(ctx, query)
-	if err != nil {
-		return nil, err
-	}
-	defer prepare.Close()
+	query := gosql.InsertUserQuery
 
 	var userId uint
-	err = prepare.
-		QueryRowContext(ctx, req.Name, req.Email, req.Password, req.Birthday, req.PhoneNumber).
+	err = repo.db.
+		QueryRowContext(ctx, query, req.Name, req.Email, req.Password, req.Birthday, req.PhoneNumber).
 		Scan(&userId)
 	if err != nil {
 		return nil, err

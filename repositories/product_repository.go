@@ -53,7 +53,7 @@ func (repo *productRepository) Delete(ctx context.Context, req *models.Product) 
 
 // FindAll implements interfaces.ProductRepository.
 func (repo *productRepository) FindAll(ctx context.Context) (res []models.Product, err error) {
-	query := "SELECT id, name, price, stock, description, shop_id, created_at, updated_at FROM products"
+	query := gosql.SelectProducts
 	rows, err := repo.db.QueryContext(ctx, query)
 	if err != nil {
 		return nil, err
@@ -82,7 +82,7 @@ func (repo *productRepository) FindAll(ctx context.Context) (res []models.Produc
 
 // FindOne implements interfaces.ProductRepository.
 func (repo *productRepository) FindOneById(ctx context.Context, id uint) (res *models.Product, err error) {
-	query := "SELECT * FROM products WHERE id = $1"
+	query := gosql.SelectProductById
 	err = repo.db.QueryRowContext(ctx, query, id).Scan(&res)
 	if err != nil {
 		return nil, err
@@ -92,31 +92,32 @@ func (repo *productRepository) FindOneById(ctx context.Context, id uint) (res *m
 
 // Save implements interfaces.ProductRepository.
 func (repo *productRepository) Save(ctx context.Context, req *models.Product) (res *models.Product, err error) {
-	query := "INSERT INTO products (name, price, stock, description, shop_id, category_id) " +
-		" VALUES " +
-		"($1, $2, $3, $4, $5, $6) RETURNING ID"
-	stmt, err := repo.db.PrepareContext(ctx, query)
-	if err != nil {
-		return nil, err
-	}
-	defer stmt.Close()
-
+	query := gosql.InsertProductQuery
 	var productId uint = 0
-	err = stmt.QueryRowContext(ctx,
-		req.Name,
-		req.Price,
-		req.Stock,
-		req.Description,
-		req.ShopID,
-		req.CategoryID,
-	).
-		Scan(&productId)
 
+	err = repo.db.QueryRowContext(ctx,
+		query,
+		&req.Name,
+		&req.Price,
+		&req.Stock,
+		&req.Description,
+		&req.ShopID,
+		&req.CategoryID).
+		Scan(&productId)
 	if err != nil {
 		return nil, err
 	}
 
-	return req, nil
+	res = &models.Product{
+		ID:          productId,
+		Name:        req.Name,
+		Price:       req.Price,
+		Description: req.Description,
+		ShopID:      req.ShopID,
+		CategoryID:  req.CategoryID,
+	}
+
+	return res, nil
 }
 
 // Update implements interfaces.ProductRepository.

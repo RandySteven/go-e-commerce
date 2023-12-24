@@ -26,4 +26,10 @@ type (
 		AddProduct(ctx context.Context, req *requests.ProductRequest) (res *models.Product, err error)
 		GetAllProducts(ctx context.Context, param *query.Param) (res []models.Product, err error)
 	}
+
+	CategoryUsecase interface {
+		GetAllCategories(ctx context.Context, param *query.Param) (res []models.Category, err error)
+		GetCategoryById(ctx context.Context, id uint) (res *models.Category, err error)
+		AddCategory(ctx context.Context, req *requests.CategoryRequest) (res *models.Category, err error)
+	}
 )

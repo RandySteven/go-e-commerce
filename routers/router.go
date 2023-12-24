@@ -18,7 +18,6 @@ func (h *Handlers) InitRouter(r *mux.Router) {
 	userGroup.HandleFunc("", h.UserHandler.TestGetUser).Methods(http.MethodGet)
 
 	shopAuth := r.PathPrefix("/shops").Subrouter()
-	shopAuth.Use(middlewares.TimeMiddleware)
 	shopAuth.HandleFunc("/register", h.ShopHandler.RegisterShop).Methods(http.MethodPost)
 	shopAuth.HandleFunc("/login", h.ShopHandler.LoginShop).Methods(http.MethodPost)
 

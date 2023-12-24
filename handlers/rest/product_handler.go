@@ -1,10 +1,12 @@
-package handlers
+package handlers_rest
 
 import (
 	"context"
 	"net/http"
 
+	"github.com/RandySteven/go-e-commerce.git/apperror"
 	"github.com/RandySteven/go-e-commerce.git/entity/payload/requests"
+	"github.com/RandySteven/go-e-commerce.git/entity/payload/responses"
 	"github.com/RandySteven/go-e-commerce.git/enums/content_type"
 	"github.com/RandySteven/go-e-commerce.git/interfaces"
 	"github.com/RandySteven/go-e-commerce.git/pkg/query"
@@ -28,15 +30,32 @@ func (h *ProductHandler) CreateProduct(res http.ResponseWriter, req *http.Reques
 
 	err := utils.BindJSON(req, &productReq)
 	if err != nil {
+		ctx = context.WithValue(ctx, "error", err)
+		defer ctx.Done()
+		return
+	}
+
+	err = utils.Validate(productReq)
+	if err != nil {
+		err = &apperror.ErrBadRequest{
+			Err: err,
+		}
+		ctx = context.WithValue(ctx, "error", err)
 		return
 	}
 
 	product, err := h.usecase.AddProduct(ctx, productReq)
 	if err != nil {
+		ctx = context.WithValue(ctx, "error", err)
 		return
 	}
 
-	utils.ResponseHandler(res, http.StatusCreated, product)
+	resp := &responses.Response{
+		Message: "Success to add to product",
+		Data:    product,
+	}
+
+	utils.ResponseHandler(res, http.StatusCreated, resp)
 }
 
 // GetAllProducts implements interfaces.ProductHandler.

@@ -2,12 +2,14 @@ package utils
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"reflect"
 	"strings"
 	"time"
 
 	"github.com/RandySteven/go-e-commerce.git/apperror"
+	"github.com/go-playground/validator"
 )
 
 func GetModelName(m any) string {
@@ -43,4 +45,39 @@ func BindJSON(req *http.Request, request any) error {
 
 func ContentType(res http.ResponseWriter, contentType string) {
 	res.Header().Set("Content-Type", contentType)
+}
+
+func Validate(req any) error {
+	validate := validator.New()
+	type requestLength struct {
+		Min uint
+		Max uint
+	}
+
+	requestLengthMap := map[string]requestLength{
+		"Password": {
+			Min: 8,
+			Max: 16,
+		},
+	}
+
+	err := validate.Struct(req)
+	if err != nil {
+		for _, currErr := range err.(validator.ValidationErrors) {
+			switch currErr.ActualTag() {
+			case "email":
+				err = fmt.Errorf("%s field is not in email format", currErr.Field())
+			case "min":
+				err = fmt.Errorf("%s field is less than %d", currErr.Field(), requestLengthMap[currErr.Field()].Min)
+			case "max":
+				err = fmt.Errorf("%s field is more than %d", currErr.Field(), requestLengthMap[currErr.Field()].Max)
+			case "numeric":
+				err = fmt.Errorf("%s field must in numeric value ", currErr.Field())
+			default:
+				err = fmt.Errorf("%s field is %s", currErr.Field(), currErr.ActualTag())
+			}
+		}
+		return err
+	}
+	return nil
 }
